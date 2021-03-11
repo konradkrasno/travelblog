@@ -1,0 +1,7 @@
+*/migrations/
+*/__pycache__/
+*/*/__pycache__/
+media
+db.sqlite3
+.env
+todo.txt

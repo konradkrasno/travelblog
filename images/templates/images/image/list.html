@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Album{% endblock %}
+
+{% block content %}
+  <div class="container pt-5">
+    {% for image in images %}
+      {{ image.place.all }}
+      <div class="container">
+        <a href="{{ image.get_absolute_url }}"><img src="{{ image.image.url }}"></a>
+        <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
