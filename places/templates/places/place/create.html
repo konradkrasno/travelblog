@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 
+{% block head %}{{ form.media }}{% endblock %}
+
 {% block title %}Place Detail{% endblock %}
 
 {% block content %}
   <div class="container pt-5">
+    <form enctype="multipart/form-data" method="post" action="">
+        {% csrf_token %}
+            {{ form.as_p }}
+        <input type="submit" value="Submit"/>
+    </form>
   </div>
 {% endblock %}

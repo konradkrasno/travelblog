@@ -1,5 +1,6 @@
-from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+from places.models import Place
 
 from .forms import AddImageForm
 from .models import Image
@@ -18,14 +19,16 @@ def image_detail(request, image_id: int, slug: str):
 
 
 @login_required
-def add_image(request):
+def add_image(request, place_id):
+    place = get_object_or_404(Place, id=place_id)
     if request.method == "POST":
         form = AddImageForm(request.POST, request.FILES)
         if form.is_valid():
             image = form.save(commit=False)
             image.author = request.user
+            image.place = place
             image.save()
-            return render(request, "images/image/detail.html", {"image": image})
+            return redirect("places:detail", place_id=image.place.id, slug=image.place.slug)
     else:
         form = AddImageForm()
     return render(request, "images/image/create.html", {"form": form})

@@ -4,6 +4,8 @@
 
 {% block content %}
   <div class="container pt-5">
+    <a href="{% url 'places:list' %}"><p>Places</p></a>
+    <br>
     <p>{{ place.country }}</p>
     <p>{{ place.locality }}</p>
     <p>{{ place.name }}</p>
@@ -13,5 +15,8 @@
         <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
       </div>
     {% endfor %}
+    <a href="{% url 'images:add' place_id=place.id %}"><p>Add Photo</p></a>
+    <br>
+    <a href="{% url 'places:remove' place_id=place.id %}"><p>Delete place</p></a>
   </div>
 {% endblock %}

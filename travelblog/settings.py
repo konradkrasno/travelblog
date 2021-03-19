@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "places.apps.PlacesConfig",
+    "django.contrib.gis",
     "images.apps.ImagesConfig",
+    "places.apps.PlacesConfig",
     "articles.apps.ArticlesConfig",
     "groups.apps.GroupsConfig",
     "comments.apps.CommentsConfig",
@@ -88,8 +89,12 @@ WSGI_APPLICATION = "travelblog.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "gis",
+        "USER": "postgres",
+        "PASSWORD": "password",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 

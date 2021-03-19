@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import CreatePlaceForm
 from .models import Place
@@ -19,11 +19,20 @@ def place_detail(request, place_id: int, slug: str):
 
 @login_required
 def add_place(request):
-    # TODO finish
-    # TODO consider google maps api
-    return render(request, "places/place/create.html")
+    if request.method == "POST":
+        form = CreatePlaceForm(request.POST)
+        if form.is_valid():
+            place = form.save(commit=False)
+            place.author = request.user
+            place.location = form.cleaned_data["location"]
+            place.save()
+            return redirect("places:detail", place_id=place.id, slug=place.slug)
+    else:
+        form = CreatePlaceForm()
+    return render(request, "places/place/create.html", {"form": form})
 
 
 @login_required
-def remove_place(request):
-    pass
+def remove_place(request, place_id: int):
+    Place.objects.filter(id=place_id).delete()
+    return redirect("places:list")

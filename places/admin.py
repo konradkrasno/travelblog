@@ -1,16 +1,17 @@
 from django.contrib import admin
+from django.contrib.gis.admin import OSMGeoAdmin
 from .models import Place
 
 
 @admin.register(Place)
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(OSMGeoAdmin):
     list_display = [
+        "author",
         "country",
-        "locality",
+        "city",
         "name",
         "slug",
-        "latitude",
-        "longitude",
-        "images",
+        "location",
+        "created",
     ]
     prepopulated_fields = {"slug": ("name",)}
