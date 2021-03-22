@@ -28,7 +28,9 @@ def add_image(request, place_id):
             image.author = request.user
             image.place = place
             image.save()
-            return redirect("places:detail", place_id=image.place.id, slug=image.place.slug)
+            return redirect(
+                "places:detail", place_id=image.place.id, slug=image.place.slug
+            )
     else:
         form = AddImageForm()
     return render(request, "images/image/create.html", {"form": form})

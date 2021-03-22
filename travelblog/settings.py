@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "articles.apps.ArticlesConfig",
     "groups.apps.GroupsConfig",
     "comments.apps.CommentsConfig",
+    "leaflet",
+    "djgeojson",
 ]
 
 MIDDLEWARE = [
@@ -145,3 +147,9 @@ AUTH_USER_MODEL = "account.User"
 # Media settings
 MEDIA_URL = "/media/"
 MEDIA_ROOT = Path.joinpath(BASE_DIR, "media/")
+
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (21.0123297, 52.2315696),
+    'DEFAULT_ZOOM': 1,
+}

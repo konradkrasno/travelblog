@@ -7,7 +7,15 @@ from .models import Place
 
 class CreatePlaceForm(forms.ModelForm):
     location = gis_forms.PointField(
-        widget=gis_forms.OSMWidget(attrs={"map_width": 600, "map_height": 500})
+        widget=gis_forms.OSMWidget(
+            attrs={
+                "map_width": 700,
+                "map_height": 500,
+                "default_lon": 21.0123297,
+                "default_lat": 52.2315696,
+                "default_zoom": 1,
+            }
+        )
     )
 
     class Meta:
