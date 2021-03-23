@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Article{% endblock %}
+
+{% block content %}
+
+  <div class="container pt-5">
+    {% for article in article_list %}
+      <a href="{{ article.get_absolute_url }}"><p>{{article.title}}</p></a>
+    {% endfor %}
+  </div>
+
+{% endblock %}

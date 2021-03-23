@@ -1,33 +1,47 @@
 from django.conf import settings
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from places.models import Place
+
+
+class ArticleManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(publish=True)
 
 
 class Article(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="articles", on_delete=models.CASCADE
     )
-    title = models.CharField(max_length=100, db_index=True)
-    slug = models.SlugField(max_length=100, db_index=True)
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, blank=True)
     body = models.TextField()
-    publish = models.DateTimeField(default=timezone.now)
+    published = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    published = models.BooleanField(default=False)
+    publish = models.BooleanField(default=False)
+    objects = models.Manager()
+    pub_objects = ArticleManager()
 
     class Meta:
-        ordering = ("-publish",)
+        ordering = ("-published",)
 
     def __str__(self):
-        return f"<Article: {self.title}>"
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("articles:detail", args=[self.id, self.slug])
 
 
 class ArticlePlace(models.Model):
     article = models.ForeignKey(
-        Article, related_name="article_places", on_delete=models.CASCADE, blank=True
+        Article, related_name="article_places", on_delete=models.CASCADE
     )
     place = models.ForeignKey(
-        Place, related_name="article_place", on_delete=models.CASCADE
+        Place, related_name="article_places", on_delete=models.CASCADE
     )
     description = models.TextField()
+
+    def __str__(self):
+        return f"{self.article}:{self.place}"

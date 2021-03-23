@@ -18,7 +18,7 @@ class Place(models.Model):
         ordering = ("created",)
 
     def __str__(self):
-        return f"<Place: {self.name}>"
+        return self.name
 
     def get_absolute_url(self):
         return reverse("places:detail", args=[self.id, self.slug])

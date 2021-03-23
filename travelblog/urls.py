@@ -22,6 +22,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("images/", include("images.urls", namespace="images")),
     path("places/", include("places.urls", namespace="places")),
+    path("articles/", include("articles.urls", namespace="articles")),
 ]
 
 if settings.DEBUG:

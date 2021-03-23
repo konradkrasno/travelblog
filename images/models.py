@@ -20,7 +20,7 @@ class Image(models.Model):
         ordering = ("created",)
 
     def __str__(self):
-        return f"<Image: {self.title}>"
+        return self.title
 
     def get_absolute_url(self):
         return reverse("images:detail", args=[self.id, self.slug])

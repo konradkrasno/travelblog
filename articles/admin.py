@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import ArticlePlace, Article
+
+from .models import Article, ArticlePlace
 
 
 class ArticlePlaceInline(admin.TabularInline):
@@ -15,10 +16,10 @@ class ArticleAdmin(admin.ModelAdmin):
         "title",
         "slug",
         "body",
-        "publish",
+        "published",
         "created",
         "updated",
-        "published",
+        "publish",
     ]
     prepopulated_fields = {"slug": ("title",)}
     inlines = [ArticlePlaceInline]

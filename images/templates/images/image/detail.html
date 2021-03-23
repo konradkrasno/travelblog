@@ -6,5 +6,11 @@
   <div class="container pt-5">
     <img src="{{ image.image.url }}">
     <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
+    <div class="container pl=5">
+      <p>Related articles</p>
+      {% for article_place in image.place.article_places.all %}
+        <a href="{{ article_place.article.get_absolute_url }}"><p>{{ article_place.article.title }}</p></a>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}
