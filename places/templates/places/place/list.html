@@ -17,8 +17,8 @@
 
     </div>
     <div class="container pt-5">
-      <a href="{% url 'places:add' %}"><p>Add New Place</p></a>
-      {% for place in places %}
+      <a href="{% url 'places:create' %}"><p>Add New Place</p></a>
+      {% for place in place_list %}
           <p>{{ place.country }}</p>
           <p>{{ place.locality }}</p>
           <a href="{{ place.get_absolute_url }}"><p>{{ place.name }}</p></a>

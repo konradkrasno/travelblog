@@ -5,9 +5,12 @@ from . import views
 app_name = "places"
 
 urlpatterns = [
-    path("", views.place_list, name="list"),
-    path("<int:place_id>/<slug:slug>/", views.place_detail, name="detail"),
-    path("add/", views.add_place, name="add"),
-    path("remove/<int:place_id>/", views.remove_place, name="remove"),
+    path("create/", views.CreatePlaceView.as_view(), name="create"),
+    path(
+        "update/<int:pk>/<slug:slug>/", views.UpdatePlaceView.as_view(), name="update"
+    ),
+    path("delete/<int:pk>/", views.DeletePlaceView.as_view(), name="delete"),
     path("data.geojson", views.MapLayer.as_view(), name="data"),
+    path("list/<str:username>/", views.PlaceListView.as_view(), name="list"),
+    path("<int:pk>/<slug:slug>/", views.PlaceDetailView.as_view(), name="detail"),
 ]

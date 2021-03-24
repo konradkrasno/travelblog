@@ -4,7 +4,7 @@
 
 {% block content %}
   <div class="container pt-5">
-    {% for image in images %}
+    {% for image in image_list %}
       {{ image.place.all }}
       <div class="container">
         <a href="{{ image.get_absolute_url }}"><img src="{{ image.image.url }}"></a>

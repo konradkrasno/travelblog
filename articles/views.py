@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import ArticlePlacesFormSet, ArticleForm
+from .forms import ArticleForm, ArticlePlacesFormSet
 from .models import Article
 
 
@@ -14,10 +14,8 @@ class ArticleListView(LoginRequiredMixin, ListView):
     template_name = "articles/article/list.html"
 
     def get_queryset(self):
-        username = self.kwargs.get("username")
-        if username:
-            return Article.pub_objects.filter(author__username=username)
-        return self.request.user.articles.all()
+        username = self.kwargs.get("username", self.request.user.username)
+        return super().get_queryset().filter(author__username=username)
 
 
 class ArticleDetailView(LoginRequiredMixin, DetailView):
@@ -29,11 +27,11 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
     model = Article
     template_name = "articles/article/article_form.html"
     form_class = ArticleForm
-    title = "Create Article"
+    template_title = "Create Article"
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data["title"] = self.title
+        data["title"] = self.template_title
         if self.request.POST:
             data["article_places"] = ArticlePlacesFormSet(
                 self.request.POST, instance=self.object
@@ -58,7 +56,10 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
 
 
 class UpdateArticleView(CreateArticleView, UpdateView):
-    title = "Update Article"
+    template_title = "Update Article"
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
 
 
 class DeleteArticleView(LoginRequiredMixin, DeleteView):

@@ -1,11 +1,14 @@
 from django import forms
 from django.contrib.gis import forms as gis_forms
+from django.forms.models import inlineformset_factory
 from django.utils.text import slugify
+from images.forms import AddImageForm
+from images.models import Image
 
 from .models import Place
 
 
-class CreatePlaceForm(forms.ModelForm):
+class PlaceForm(forms.ModelForm):
     location = gis_forms.PointField(
         widget=gis_forms.OSMWidget(
             attrs={
@@ -28,3 +31,6 @@ class CreatePlaceForm(forms.ModelForm):
         if commit:
             place.save()
         return place
+
+
+ImagesFormSet = inlineformset_factory(Place, Image, form=AddImageForm, can_delete=False)

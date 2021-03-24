@@ -25,12 +25,10 @@ class ArticlePlaceForm(forms.ModelForm):
 
     def __init__(self, *args, user_id=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["place"].required = False
-        self.fields["description"].required = False
         if user_id:
             self.fields["place"].queryset = Place.objects.filter(author__id=user_id)
 
 
 ArticlePlacesFormSet = inlineformset_factory(
-    Article, ArticlePlace, form=ArticlePlaceForm, can_delete=False
+    Article, ArticlePlace, form=ArticlePlaceForm, can_delete=True
 )
