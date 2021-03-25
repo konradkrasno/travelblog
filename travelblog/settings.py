@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     "comments.apps.CommentsConfig",
     "leaflet",
     "djgeojson",
+    "crispy_forms",
+    "easy_thumbnails",
 ]
 
 MIDDLEWARE = [
@@ -142,6 +144,9 @@ STATIC_URL = "/static/"
 
 # Account settings
 AUTH_USER_MODEL = "account.User"
+LOGIN_REDIRECT_URL = "dashboard"
+LOGIN_URL = "login"
+LOGOUT_URL = "logout"
 
 
 # Media settings
@@ -153,3 +158,7 @@ LEAFLET_CONFIG = {
     "DEFAULT_CENTER": (21.0123297, 52.2315696),
     "DEFAULT_ZOOM": 1,
 }
+
+
+# Crispy configuration
+CRISPY_TEMPLATE_PACK = "bootstrap4"

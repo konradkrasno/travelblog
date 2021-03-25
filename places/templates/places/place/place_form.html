@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block head %}{{ form.media }}{% endblock %}
 
 {% block title %}{{ title }}{% endblock %}
@@ -7,8 +9,8 @@
 {% block content %}
   <div class="container pt-5">
     <form enctype="multipart/form-data" method="post">
-        {{ form.as_p }}
-        {{ images_form.as_p }}
+        {{ form|crispy }}
+        {{ images_form|crispy }}
         {% csrf_token %}
         <input type="submit" value="Add Place">
     </form>

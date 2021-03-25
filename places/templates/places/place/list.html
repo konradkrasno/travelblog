@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load leaflet_tags %}
+{% load thumbnail %}
 
 {% block head %}
   {% leaflet_js %}
@@ -24,7 +25,7 @@
           <a href="{{ place.get_absolute_url }}"><p>{{ place.name }}</p></a>
           {% for image in place.images.all %}
             <div class="container">
-              <a href="{{ image.get_absolute_url }}"><img src="{{ image.image.url }}"></a>
+              <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 300x0 %}"></a>
               <a href="{{ image.get_absolute_url }}"></a><p>{{ image.title }}</p></a>
             </div>
           {% endfor %}

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load thumbnail %}
+
 {% block title %}Article{% endblock %}
 
 {% block content %}
@@ -16,7 +18,7 @@
       {% for place in places %}
         {% for image in place.place.images.all %}
           <div class="img-fluid rounded" class="container">
-            <a href="{{ image.get_absolute_url }}"><img src="{{ image.image.url }}"></a>
+            <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 500x0 %}"></a>
             <a href="{{ image.get_absolute_url }}"></a><p>{{ image.title }}</p></a>
           </div>
         {% endfor %}

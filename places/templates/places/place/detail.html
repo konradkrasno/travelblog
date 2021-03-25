@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load thumbnail %}
+
 {% block title %}Place Detail{% endblock %}
 
 {% block content %}
@@ -11,7 +13,7 @@
     <p>{{ place.name }}</p>
     <div class="container">
       {% for image in place.images.all %}
-        <a href="{{ image.get_absolute_url }}"><img src="{{ image.image.url }}"></a>
+        <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 500x0 %}"></a>
         <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
       {% endfor %}
       <p>Related articles</p>

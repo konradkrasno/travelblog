@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Album{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Photo{% endblock %}
 
 {% block content %}
   <div class="container pt-5">
       <form method="post" enctype="multipart/form-data">
-        {{ form.as_p }}
+        {{ form|crispy }}
         {% csrf_token %}
         <input type="submit" value="Add Photo">
       </form>

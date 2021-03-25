@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 
+{% load thumbnail %}
+
 {% block title %}Photo{% endblock %}
 
 {% block content %}
   <div class="container pt-5">
-    <img src="{{ image.image.url }}">
+    <img src="{% thumbnail image.image 500x0 %}">
     <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
     <div class="container pl=5">
       <p>Related articles</p>
