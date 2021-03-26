@@ -81,4 +81,5 @@ class MapLayer(LoginRequiredMixin, GeoJSONLayerView):
     geometry_field = "location"
 
     def get_queryset(self):
-        return self.request.user.places.all()
+        username = self.kwargs.get("username", self.request.user.username)
+        return super().get_queryset().filter(author__username=username)

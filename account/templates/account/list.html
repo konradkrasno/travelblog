@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+  <div class="container pt-5">
+    {% for user in user_list %}
+      <a href="{{ user.get_absolute_url }}"><p>{{ user.username }}</p></a>
+    {% endfor %}
+  </div>
+{% endblock %}

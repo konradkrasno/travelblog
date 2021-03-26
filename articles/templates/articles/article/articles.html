@@ -1,0 +1,14 @@
+{% load thumbnail %}
+
+<div class="container pt-5">
+    {% for article in article_list %}
+      <a href="{{ article.get_absolute_url }}"><p>{{article.title}}</p></a>
+      <div class="container">
+        {% with image=article.article_places.first.place.images.first %}
+          <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 300x0 %}"></a>
+          <a href="{{ image.get_absolute_url }}"></a><p>{{ image.title }}</p></a>
+        {% endwith %}
+        <p>{{ article.body|truncatewords:50 }}</p>
+      </div>
+    {% endfor %}
+</div>

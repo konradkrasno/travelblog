@@ -1,0 +1,21 @@
+{% load thumbnail %}
+
+<div class="container pt-5">
+    {% for image in image_list %}
+      {{ image.place.all }}
+      <div class="container">
+        <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 300x0 %}"></a>
+        <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
+        <div class="container pl=5">
+        {% with related_articles=image.place.article_places.all %}
+          {% if related_articles %}
+            <p>Related articles</p>
+            {% for article_place in  %}
+              <a href="{{ article_place.article.get_absolute_url }}"><p>{{ article_place.article.title }}</p></a>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
