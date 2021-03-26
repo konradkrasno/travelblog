@@ -1,31 +1,51 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView, DetailView
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from common.decorators import ajax_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView, ListView, DetailView
 
+from common.decorators import ajax_required
+from .forms import UserRegistrationForm, UserEditForm
 from .models import User, Follow
 
 
 def register(request):
-    pass
+    if request.method == "POST":
+        user_form = UserRegistrationForm(request.POST)
+        if user_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data["password"])
+            new_user.save()
+            return render(request, "account/register_done.html", {"new_user": new_user})
+    user_form = UserRegistrationForm()
+    return render(request, "account/register.html", {"user_form": user_form})
 
 
 def edit(request):
-    pass
+    if request.method == "POST":
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, "Profile updated successfully")
+        else:
+            messages.error(request, "Error updating your profile")
+    else:
+        user_form = UserEditForm(instance=request.user)
+    return render(request, "account/edit.html", {"user_form": user_form})
 
 
-class DashboardView(TemplateView):
+class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "account/dashboard.html"
 
 
-class UserListView(ListView):
+class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = "account/list.html"
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = "account/detail.html"
     slug_field = "username"
@@ -50,7 +70,7 @@ def user_follow(request):
                     user_to=user,
                 )
             else:
-                Contact.objects.filter(
+                Follow.objects.filter(
                     user_from=request.user,
                     user_to=user,
                 ).delete()

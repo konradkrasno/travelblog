@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+
 from places.models import Place
 
 
@@ -23,6 +24,9 @@ class Article(models.Model):
     publish = models.BooleanField(default=False)
     objects = models.Manager()
     pub_objects = ArticleManager()
+    places = models.ManyToManyField(
+        Place, through="ArticlePlace", related_name="articles"
+    )
 
     class Meta:
         ordering = ("-published",)

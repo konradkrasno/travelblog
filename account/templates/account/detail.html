@@ -12,6 +12,7 @@
 {% block content %}
   <div class="container pt-5">
     <p>{{ user.username }}</p>
+    {% if user != request.user %}
     <a href="#" data-id="{{ user.id }}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow">
       {% if request.user not in user.followers.all %}
         Follow
@@ -19,6 +20,7 @@
         Unfollow
       {% endif %}
     </a>
+    {% endif %}
 
     <div class="container pt-3">
       <p>Places</p>
