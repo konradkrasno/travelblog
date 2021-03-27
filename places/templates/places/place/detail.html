@@ -15,6 +15,9 @@
       {% for image in place.images.all %}
         <a href="{{ image.get_absolute_url }}"><img src="{% thumbnail image.image 500x0 %}"></a>
         <a href="{{ image.place.get_absolute_url }}"><p>{{ image.title }}</p></a>
+        {% if image.author == request.user %}
+          <a href="{% url 'images:delete' pk=image.id %}"><p>Delete image</p></a>
+        {% endif %}
       {% endfor %}
       <p>Related articles</p>
       {% for article_place in place.article_places.all %}
@@ -22,8 +25,11 @@
       {% endfor %}
     </div>
 
-    <a href="{% url 'images:add' place_id=place.id %}"><p>Add Photo</p></a>
-    <br>
-    <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>
+    {% if place.author == request.user %}
+      <a href="{% url 'images:add' place_id=place.id %}"><p>Add Photo</p></a>
+      <br>
+      <a href="{% url 'places:update' pk=place.id slug=place.slug %}"><p>Update place</p></a>
+      <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>
+    {% endif %}
   </div>
 {% endblock %}
