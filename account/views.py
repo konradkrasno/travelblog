@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_POST
 from django.views.generic import TemplateView, ListView, DetailView
 
+from articles.models import Article
 from common.decorators import ajax_required
 from .forms import UserRegistrationForm, UserEditForm
 from .models import User, Follow
@@ -20,7 +21,7 @@ def register(request):
             new_user.save()
             return render(request, "account/register_done.html", {"new_user": new_user})
     user_form = UserRegistrationForm()
-    return render(request, "account/register.html", {"user_form": user_form})
+    return render(request, "account/register.html", {"user_form": user_form, "section": "register"})
 
 
 def edit(request):
@@ -39,10 +40,26 @@ def edit(request):
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "account/dashboard.html"
 
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data()
+        following_ids = self.request.user.following.values_list("id", flat=True)
+        if following_ids:
+            articles = Article.pub_objects.filter(author_id__in=following_ids).order_by("-publish")[:10]
+        else:
+            articles = Article.pub_objects.all().order_by("-publish")[:10]
+        data["articles"] = articles
+        data["section"] = "dashboard"
+        return data
+
 
 class UserListView(LoginRequiredMixin, ListView):
     model = User
     template_name = "account/list.html"
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data()
+        data["section"] = "users"
+        return data
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -50,6 +67,12 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     template_name = "account/detail.html"
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data()
+        data["articles"] = Article.pub_objects.filter(author=self.object)
+        data["section"] = "users"
+        return data
 
 
 @ajax_required

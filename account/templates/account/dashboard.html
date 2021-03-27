@@ -1,7 +1,12 @@
 {% extends "base.html" %}
+{% load account_tags %}
 
-{% block title %}Visited Places{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
+  <a href="{% url 'places:create' %}"><p>Add place you have visited</p></a>
+  <a href="{% url 'articles:create' %}"><p>Create story trip with visited places</p></a>
+  <a href="{% url 'articles:dashboard' %}"><p>View my stories</p></a>
 
+  {% include "articles/article/articles.html" with article_list=articles %}
 {% endblock %}

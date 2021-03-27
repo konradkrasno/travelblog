@@ -11,7 +11,6 @@
 
 {% block content %}
   <div class="container pt-5">
-    <p>{{ user.username }}</p>
     {% if user != request.user %}
     <a href="#" data-id="{{ user.id }}" data-action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow">
       {% if request.user not in user.followers.all %}
@@ -23,11 +22,11 @@
     {% endif %}
 
     <div class="container pt-3">
-      <p>Places</p>
+      <p>Places visited by {{ user.username }}</p>
       {% leaflet_map "main" callback="main_map_init" %}
     </div>
   
-    {% include "articles/article/articles.html" with article_list=user.articles.all %}
+    {% include "articles/article/articles.html" with article_list=articles %}
 
   </div>
 

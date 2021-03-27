@@ -11,14 +11,15 @@
 
 {% block content %}
   <div class="container pt-5">
-    <div class="container">
-      <p>Places</p>
+    {% if view.kwargs.username == request.user.username %}
+      <a href="{% url 'places:create' %}"><p>Add place you have visited</p></a>
+      <a href="{% url 'articles:create' %}"><p>Create story trip with visited places</p></a>
+    {% endif %}
+
+    <div class="container pt-3">
+      <p>Visited Places</p>
       {% leaflet_map "main" callback="main_map_init" %}
     </div>
-
-    {% if username == request.user.username %}
-      <a href="{% url 'places:create' %}"><p>Add New Place</p></a>
-    {% endif %}
 
     {% include "places/place/places.html" with place_list=place_list %}
   </div>

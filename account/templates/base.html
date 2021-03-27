@@ -29,35 +29,38 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #d1eaf5;">
     <div class="container">
-      <a class="navbar-brand" href="#">TravelBlog</a>
+      <a class="navbar-brand" href="{% url 'dashboard' %}">TravelBlog</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home
+          <li class="nav-item {% if section == 'dashboard' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'dashboard' %}">Home
               <span class="sr-only">(current)</span>
             </a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item {% if section == 'about' %}active{% endif %}">
             <a class="nav-link" href="#">About</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item {% if section == 'groups' %}active{% endif %}">
             <a class="nav-link" href="#">Groups</a>
           </li>
           {% if request.user.is_authenticated %}
-            <li class="nav-item">
+            <li class="nav-item {% if section == 'users' %}active{% endif %}">
               <a class="nav-link" href="{% url 'user_list' %}">Users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Hi {{ request.user.username }}</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'logout' %}">Logout</a>
             </li>
           {% else %}
-            <li class="nav-item">
+            <li class="nav-item {% if section == 'register' %}active{% endif %}">
               <a class="nav-link" href="{% url 'register' %}">Sign Up</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item {% if section == 'login' %}active{% endif %}">
               <a class="nav-link" href="{% url 'login' %}">Sign In</a>
             </li>
           {% endif %}
@@ -110,26 +113,38 @@
               <div class="col-lg-6">
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a href="#">Web Design</a>
+                    {% if view.kwargs.username %}
+                      <a href="{% url 'images:list' username=view.kwargs.username %}">Photos</a>
+                    {% else %}
+                      <a href="{% url 'images:list' username=request.user.username %}">Photos</a>
+                    {% endif %}
                   </li>
                   <li>
-                    <a href="#">HTML</a>
+                    {% if view.kwargs.username %}
+                      <a href="{% url 'places:list' username=view.kwargs.username %}">Places</a>
+                    {% else %}
+                      <a href="{% url 'places:list' username=request.user.username %}">Places</a>
+                    {% endif %}
                   </li>
                   <li>
-                    <a href="#">Freebies</a>
+                    {% if view.kwargs.username %}
+                      <a href="{% url 'articles:list' username=view.kwargs.username %}">Articles</a>
+                    {% else %}
+                      <a href="{% url 'articles:list' username=request.user.username %}">Articles</a>
+                    {% endif %}
                   </li>
                 </ul>
               </div>
               <div class="col-lg-6">
                 <ul class="list-unstyled mb-0">
                   <li>
-                    <a href="#">JavaScript</a>
+                    <a href="#">Tips</a>
                   </li>
                   <li>
-                    <a href="#">CSS</a>
+                    <a href="#">Forum</a>
                   </li>
                   <li>
-                    <a href="#">Tutorials</a>
+                    <a href="#">Plan your trip</a>
                   </li>
                 </ul>
               </div>

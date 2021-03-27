@@ -1,18 +1,10 @@
 from django import template
-from articles.models import Article
 
 register = template.Library()
 
 
 @register.inclusion_tag("articles/article/articles.html")
 def show_recommended_articles(count=3):
-    # articles = Article.objects.all()[:count]
-    # return {"articles": articles}
-    pass
-
-
-@register.inclusion_tag("articles/article/articles.html")
-def show_recent_articles(count=10):
     pass
 
 

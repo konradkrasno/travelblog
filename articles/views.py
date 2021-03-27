@@ -14,8 +14,10 @@ class ArticleListView(LoginRequiredMixin, ListView):
     template_name = "articles/article/list.html"
 
     def get_queryset(self):
-        username = self.kwargs.get("username", self.request.user.username)
-        return super().get_queryset().filter(author__username=username)
+        username = self.kwargs.get("username")
+        if username:
+            return Article.pub_objects.filter(author__username=username)
+        return self.request.user.articles.all()
 
 
 class ArticleDetailView(LoginRequiredMixin, DetailView):
