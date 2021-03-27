@@ -45,6 +45,8 @@ class CreatePlaceView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         context = self.get_context_data()
         images_form = context["images_form"]
+        if not images_form.is_valid():
+            return super().form_invalid(form)
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.location = form.cleaned_data["location"]

@@ -3,5 +3,11 @@
 {% block title %}{{ view.kwargs.username }} articles{% endblock %}
 
 {% block content %}
+  {% if not view.kwargs.username %}
+    <a href="{% url 'places:create' %}"><p>Add place you have visited</p></a>
+    <a href="{% url 'articles:create' %}"><p>Create story trip with visited places</p></a>
+    <a href="{% url 'articles:dashboard' %}"><p>View my stories</p></a>
+  {% endif %}
+
   {% include "articles/article/articles.html" with article_list=article_list username=view.kwargs.username %}
 {% endblock %}

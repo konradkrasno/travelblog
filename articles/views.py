@@ -1,11 +1,12 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.http import HttpResponseForbidden
 from django.urls import reverse
-from django.views.generic import DetailView, ListView
+from django.views import View
+from django.views.generic import DetailView, ListView, FormView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import ArticleForm, ArticlePlacesFormSet
+from .forms import ArticleForm, ArticlePlacesFormSet, ArticleCommentForm, SubCommentForm
 from .models import Article
 
 
@@ -20,9 +21,71 @@ class ArticleListView(LoginRequiredMixin, ListView):
         return self.request.user.articles.all()
 
 
-class ArticleDetailView(LoginRequiredMixin, DetailView):
+class ArticleDisplayView(LoginRequiredMixin, DetailView):
     model = Article
     template_name = "articles/article/detail.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data()
+        data["comment_form"] = ArticleCommentForm()
+        data["sub_comment_form"] = SubCommentForm()
+        return data
+
+
+class ArticleCommentView(SingleObjectMixin, FormView):
+    model = Article
+    template_name = "articles/article/detail.html"
+    form_class = ArticleCommentForm
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.author = self.request.user
+        comment.article = self.object
+        comment.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+class ArticleSubCommentView(SingleObjectMixin, FormView):
+    model = Article
+    template_name = "articles/article/detail.html"
+    form_class = SubCommentForm
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        comment.author = self.request.user
+        comment.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+
+class ArticleDetailView(View):
+    def get(self, request, *args, **kwargs):
+        view = ArticleDisplayView.as_view()
+        return view(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if "main_comment" in request.POST:
+            view = ArticleSubCommentView.as_view()
+        else:
+            view = ArticleCommentView.as_view()
+        return view(request, *args, **kwargs)
 
 
 class CreateArticleView(LoginRequiredMixin, CreateView):
@@ -36,10 +99,12 @@ class CreateArticleView(LoginRequiredMixin, CreateView):
         data["title"] = self.template_title
         if self.request.POST:
             data["article_places"] = ArticlePlacesFormSet(
-                self.request.POST, instance=self.object
+                self.request.POST, instance=self.object, user=self.request.user
             )
         else:
-            data["article_places"] = ArticlePlacesFormSet(instance=self.object)
+            data["article_places"] = ArticlePlacesFormSet(
+                instance=self.object, user=self.request.user
+            )
         return data
 
     def form_valid(self, form):

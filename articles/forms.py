@@ -1,8 +1,9 @@
 from django import forms
-from django.utils.text import slugify
 from django.forms.models import inlineformset_factory
+from django.utils.text import slugify
 
-from .models import Article, ArticlePlace
+from places.models import Place
+from .models import Article, ArticlePlace, ArticleComment, SubComment
 
 
 class ArticleForm(forms.ModelForm):
@@ -23,12 +24,35 @@ class ArticlePlaceForm(forms.ModelForm):
         model = ArticlePlace
         fields = ["place", "description"]
 
-    def __init__(self, *args, user_id=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        if user_id:
-            self.fields["place"].queryset = Place.objects.filter(author__id=user_id)
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super(ArticlePlaceForm, self).__init__(*args, **kwargs)
+        self.fields["place"].queryset = Place.objects.filter(author=self.user)
 
 
-ArticlePlacesFormSet = inlineformset_factory(
+BaseArticlePlacesFormSet = inlineformset_factory(
     Article, ArticlePlace, form=ArticlePlaceForm, can_delete=True
 )
+
+
+class ArticlePlacesFormSet(BaseArticlePlacesFormSet):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop("user")
+        super(ArticlePlacesFormSet, self).__init__(*args, **kwargs)
+
+    def _construct_form(self, *args, **kwargs):
+        kwargs["user"] = self.user
+        return super(ArticlePlacesFormSet, self)._construct_form(*args, **kwargs)
+
+
+class ArticleCommentForm(forms.ModelForm):
+    class Meta:
+        model = ArticleComment
+        fields = ["body"]
+
+
+class SubCommentForm(forms.ModelForm):
+    class Meta:
+        model = SubComment
+        fields = ["body", "main_comment"]
+        widgets = {"main_comment": forms.HiddenInput}

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Article, ArticlePlace
+from .models import Article, ArticlePlace, ArticleComment, SubComment
 
 
 class ArticlePlaceInline(admin.TabularInline):
@@ -23,3 +23,29 @@ class ArticleAdmin(admin.ModelAdmin):
     ]
     prepopulated_fields = {"slug": ("title",)}
     inlines = [ArticlePlaceInline]
+
+
+@admin.register(ArticleComment)
+class ArticleCommentAdmin(admin.ModelAdmin):
+    list_display = [
+        "article",
+        "author",
+        "body",
+        "created",
+        "updated",
+        "active",
+    ]
+    list_editable = ["active"]
+
+
+@admin.register(SubComment)
+class SubCommentAdmin(admin.ModelAdmin):
+    list_display = [
+        "main_comment",
+        "author",
+        "body",
+        "created",
+        "updated",
+        "active",
+    ]
+    list_editable = ["active"]

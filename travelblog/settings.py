@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "places.apps.PlacesConfig",
     "articles.apps.ArticlesConfig",
     "groups.apps.GroupsConfig",
-    "comments.apps.CommentsConfig",
     "leaflet",
     "djgeojson",
     "crispy_forms",

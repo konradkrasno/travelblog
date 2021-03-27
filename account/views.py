@@ -21,7 +21,11 @@ def register(request):
             new_user.save()
             return render(request, "account/register_done.html", {"new_user": new_user})
     user_form = UserRegistrationForm()
-    return render(request, "account/register.html", {"user_form": user_form, "section": "register"})
+    return render(
+        request,
+        "account/register.html",
+        {"user_form": user_form, "section": "register"},
+    )
 
 
 def edit(request):
@@ -44,7 +48,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         data = super().get_context_data()
         following_ids = self.request.user.following.values_list("id", flat=True)
         if following_ids:
-            articles = Article.pub_objects.filter(author_id__in=following_ids).order_by("-publish")[:10]
+            articles = Article.pub_objects.filter(author_id__in=following_ids).order_by(
+                "-publish"
+            )[:10]
         else:
             articles = Article.pub_objects.all().order_by("-publish")[:10]
         data["articles"] = articles

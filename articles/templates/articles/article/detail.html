@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% load thumbnail %}
 
 {% block title %}Article{% endblock %}
@@ -10,7 +9,7 @@
       <a href="{% url 'articles:update' pk=article.id slug=article.slug %}"><p>Edit article</p></a>
       <a href="{% url 'articles:delete' pk=article.id %}"><p>Delete article</p></a>
     {% endif %}
-    <h2 class="mt-4">{{ article.title }}</h1>
+    <h2 class="mt-4">{{ article.title }}</h2>
     <p class="lead">
         by
         <a href="{{ article.author.get_absolute_url }}">{{ article.author.username }}</a>
@@ -34,5 +33,7 @@
       {% endfor %}
     {% endwith %}
     <hr>
+
+    {% include "articles/article/comments.html" with comment_form=comment_form comments=article.comments.all %}
 
 {% endblock %}

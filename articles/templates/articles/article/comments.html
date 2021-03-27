@@ -1,0 +1,40 @@
+{% load crispy_forms_tags %}
+
+<!-- Comments Form -->
+<div class="card my-4">
+<h5 class="card-header">Leave a Comment:</h5>
+<div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      {{ comment_form|crispy }}
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+</div>
+
+{% for comment in comments %}
+  <div class="media mb-4">
+    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+    <div class="media-body">
+        <h5 class="mt-0">{{ comment.author.username }}</h5>
+        {{ comment.body }}
+
+        <form method="post">
+          {% csrf_token %}
+          {{ sub_comment_form|crispy }}
+          <input type="hidden" name="main_comment" id="main_comment_id" value="{{ comment.id }}">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        {% for sub_comment in comment.sub_comments.all %}
+          <div class="media mt-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+              <h5 class="mt-0">{{ sub_comment.author.username }}</h5>
+              {{ sub_comment.body }}
+            </div>
+          </div>  
+        {% endfor %}
+    </div>
+  </div>
+{% endfor %}

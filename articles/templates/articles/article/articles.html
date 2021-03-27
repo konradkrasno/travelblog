@@ -10,7 +10,7 @@
         {% endwith %}
         <p>{{ article.body|truncatewords:50 }}</p>
       </div>
-      {% if username == '' %}
+      {% if article.author == request.user %}
         <a href="{% url 'articles:update' pk=article.id slug=article.slug %}"><p>Edit article</p></a>
       {% endif %}
     {% endfor %}
