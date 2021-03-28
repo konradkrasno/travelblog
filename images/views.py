@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView
 
@@ -28,9 +27,16 @@ class AddImageView(LoginRequiredMixin, CreateView):
     template_name = "images/image/create.html"
     form_class = AddImageForm
 
-    def form_valid(self, form):
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data()
         place_id = self.kwargs.get("place_id")
         place = get_object_or_404(Place, id=place_id)
+        data["place"] = place
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        place = context["place"]
         self.object = form.save(commit=False)
         self.object.author = self.request.user
         self.object.place = place
@@ -38,9 +44,7 @@ class AddImageView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse(
-            "places:detail", args=[self.object.place.id, self.object.place.slug]
-        )
+        return self.object.get_absolute_url()
 
 
 class DeleteImageView(LoginRequiredMixin, DeleteView):
@@ -48,6 +52,4 @@ class DeleteImageView(LoginRequiredMixin, DeleteView):
     template_name = "confirm_delete.html"
 
     def get_success_url(self):
-        return reverse(
-            "places:detail", args=[self.object.place.id, self.object.place.slug]
-        )
+        return self.object.place.get_absolute_url()

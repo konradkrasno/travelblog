@@ -1,9 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 from django.urls import reverse
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView, FormView
+from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from djgeojson.views import GeoJSONLayerView
 
+from images.forms import AddImageForm
 from .forms import ImagesFormSet, PlaceForm, PlaceSearchForm
 from .models import Place
 
@@ -26,9 +29,14 @@ class PlaceListView(LoginRequiredMixin, ListView):
         return places
 
 
-class PlaceDetailView(LoginRequiredMixin, DeleteView):
+class PlaceDetailView(LoginRequiredMixin, DetailView):
     model = Place
     template_name = "places/place/detail.html"
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data()
+        data["add_image_form"] = AddImageForm()
+        return data
 
 
 class CreatePlaceView(LoginRequiredMixin, CreateView):
@@ -91,3 +99,25 @@ class MapLayer(LoginRequiredMixin, GeoJSONLayerView):
     def get_queryset(self):
         username = self.kwargs.get("username", self.request.user.username)
         return super().get_queryset().filter(author__username=username)
+
+
+class AddImageView(SingleObjectMixin, FormView):
+    model = Place
+    template_name = "places/place/detail.html"
+    form_class = AddImageForm
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        image = form.save(commit=False)
+        image.author = self.request.user
+        image.place = self.object
+        image.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()

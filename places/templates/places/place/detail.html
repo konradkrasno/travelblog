@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% load thumbnail %}
 
 {% block title %}Place Detail{% endblock %}
@@ -19,17 +19,26 @@
           <a href="{% url 'images:delete' pk=image.id %}"><p>Delete image</p></a>
         {% endif %}
       {% endfor %}
-      <p>Related articles</p>
-      {% for article_place in place.article_places.all %}
-        <a href="{{ article_place.article.get_absolute_url }}"><p>{{ article_place.article.title }}</p></a>
-      {% endfor %}
-    </div>
 
-    {% if place.author == request.user %}
-      <a href="{% url 'images:add' place_id=place.id %}"><p>Add Photo</p></a>
-      <br>
-      <a href="{% url 'places:update' pk=place.id slug=place.slug %}"><p>Update place</p></a>
-      <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>
-    {% endif %}
+      {% with related_articles=place.article_places.all %}
+        {% if related_articles %}
+          <p>Related articles</p>
+          {% for article_place in related_articles %}
+            <a href="{{ article_place.article.get_absolute_url }}"><p>{{ article_place.article.title }}</p></a>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% if place.author == request.user %}
+        <form action="{% url 'places:add_image' place.id %}" method="post">
+          {{ add_image_form|crispy }}
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Add image</button>
+        </form>
+        <br>
+        <a href="{% url 'places:update' pk=place.id slug=place.slug %}"><p>Update place</p></a>
+        <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>
+      {% endif %}
+    </div>
   </div>
 {% endblock %}
