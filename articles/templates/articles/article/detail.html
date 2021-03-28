@@ -34,6 +34,6 @@
     {% endwith %}
     <hr>
 
-    {% include "articles/article/comments.html" with comment_form=comment_form comments=article.comments.all %}
+    {% include "articles/article/comments.html" with comment_form=comment_form comments=article.comments.all object=article %}
 
 {% endblock %}

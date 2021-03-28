@@ -1,10 +1,10 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db import models
 from django.urls import reverse
 
 
-class UserManager(models.Manager):
+class CustomUserManager(UserManager):
     def get_queryset(self):
         return super().get_queryset()
 
@@ -23,7 +23,7 @@ class User(AbstractUser):
     following = models.ManyToManyField(
         "self", through="Follow", related_name="followers", symmetrical=False
     )
-    objects = UserManager()
+    objects = CustomUserManager()
 
     def get_absolute_url(self):
         return reverse("user_detail", args=[self.username])

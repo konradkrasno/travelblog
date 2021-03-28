@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.urls import reverse
-from django.views import View
 from django.views.generic import DetailView, ListView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -37,7 +36,7 @@ class ArticleListView(LoginRequiredMixin, ListView):
         return articles
 
 
-class ArticleDisplayView(LoginRequiredMixin, DetailView):
+class ArticleDetailView(LoginRequiredMixin, DetailView):
     model = Article
     template_name = "articles/article/detail.html"
 
@@ -50,7 +49,6 @@ class ArticleDisplayView(LoginRequiredMixin, DetailView):
 
 class ArticleCommentView(SingleObjectMixin, FormView):
     model = Article
-    template_name = "articles/article/detail.html"
     form_class = ArticleCommentForm
 
     def post(self, request, *args, **kwargs):
@@ -72,7 +70,6 @@ class ArticleCommentView(SingleObjectMixin, FormView):
 
 class ArticleSubCommentView(SingleObjectMixin, FormView):
     model = Article
-    template_name = "articles/article/detail.html"
     form_class = SubCommentForm
 
     def post(self, request, *args, **kwargs):
@@ -89,19 +86,6 @@ class ArticleSubCommentView(SingleObjectMixin, FormView):
 
     def get_success_url(self):
         return self.object.get_absolute_url()
-
-
-class ArticleDetailView(View):
-    def get(self, request, *args, **kwargs):
-        view = ArticleDisplayView.as_view()
-        return view(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        if "main_comment" in request.POST:
-            view = ArticleSubCommentView.as_view()
-        else:
-            view = ArticleCommentView.as_view()
-        return view(request, *args, **kwargs)
 
 
 class CreateArticleView(LoginRequiredMixin, CreateView):

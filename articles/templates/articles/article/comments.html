@@ -4,9 +4,9 @@
 <div class="card my-4">
 <h5 class="card-header">Leave a Comment:</h5>
 <div class="card-body">
-    <form method="post">
-      {% csrf_token %}
+    <form action="{% url 'articles:comment' object.id %}" method="post">
       {{ comment_form|crispy }}
+      {% csrf_token %}
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
@@ -19,9 +19,9 @@
         <h5 class="mt-0">{{ comment.author.username }}</h5>
         {{ comment.body }}
 
-        <form method="post">
-          {% csrf_token %}
+        <form action="{% url 'articles:sub_comment' object.id %}" method="post">
           {{ sub_comment_form|crispy }}
+          {% csrf_token %}
           <input type="hidden" name="main_comment" id="main_comment_id" value="{{ comment.id }}">
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
