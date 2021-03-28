@@ -1,6 +1,24 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.urls import reverse
+
+
+class PlaceManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def search_by_name(self, search_text, objects=None):
+        vector = SearchVector("name")
+        query = SearchQuery(search_text)
+        if not objects:
+            objects = self.get_queryset()
+        return (
+            objects
+            .annotate(search=vector, rank=SearchRank(vector, query))
+            .filter(search=search_text)
+            .order_by("-rank")
+        )
 
 
 class Place(models.Model):
@@ -13,6 +31,7 @@ class Place(models.Model):
     slug = models.SlugField(max_length=200, blank=True)
     location = models.PointField()
     created = models.DateTimeField(auto_now_add=True)
+    objects = PlaceManager()
 
     class Meta:
         ordering = ("-created",)

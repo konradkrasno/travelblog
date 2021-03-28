@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ view.kwargs.username }} articles{% endblock %}
 
@@ -10,4 +12,19 @@
   {% endif %}
 
   {% include "articles/article/articles.html" with article_list=article_list username=view.kwargs.username %}
+{% endblock %}
+
+{% block search_widget %}
+  <!-- Search Widget -->
+  <div class="card my-4">
+    <h5 class="card-header">Search</h5>
+    <div class="card-body">
+      <div class="input-group">
+        <form method="get">
+          {{ article_search_form|crispy }}
+          <input type="submit" value="Search">
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

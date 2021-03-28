@@ -6,7 +6,13 @@ from django.views.generic import DetailView, ListView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import ArticleForm, ArticlePlacesFormSet, ArticleCommentForm, SubCommentForm
+from .forms import (
+    ArticleForm,
+    ArticlePlacesFormSet,
+    ArticleCommentForm,
+    SubCommentForm,
+    ArticleSearchForm,
+)
 from .models import Article
 
 
@@ -14,11 +20,21 @@ class ArticleListView(LoginRequiredMixin, ListView):
     model = Article
     template_name = "articles/article/list.html"
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data()
+        data["article_search_form"] = ArticleSearchForm()
+        return data
+
     def get_queryset(self):
         username = self.kwargs.get("username")
         if username:
-            return Article.pub_objects.filter(author__username=username)
-        return self.request.user.articles.all()
+            articles = Article.pub_objects.filter(author__username=username)
+        else:
+            articles = self.request.user.articles.all()
+        if "article_search" in self.request.GET:
+            article_search = self.request.GET["article_search"]
+            articles = Article.pub_objects.search_by_title(article_search, objects=articles)
+        return articles
 
 
 class ArticleDisplayView(LoginRequiredMixin, DetailView):

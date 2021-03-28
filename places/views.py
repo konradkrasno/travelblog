@@ -1,13 +1,10 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.gis.shortcuts import render_to_kml
-from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.generic import DetailView, ListView
+from django.views.generic import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from djgeojson.views import GeoJSONLayerView
 
-from .forms import ImagesFormSet, PlaceForm
+from .forms import ImagesFormSet, PlaceForm, PlaceSearchForm
 from .models import Place
 
 
@@ -15,9 +12,18 @@ class PlaceListView(LoginRequiredMixin, ListView):
     model = Place
     template_name = "places/place/list.html"
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        data = super().get_context_data()
+        data["place_search_form"] = PlaceSearchForm()
+        return data
+
     def get_queryset(self):
         username = self.kwargs.get("username", self.request.user.username)
-        return super().get_queryset().filter(author__username=username)
+        places = super().get_queryset().filter(author__username=username)
+        if "place_search" in self.request.GET:
+            place_search = self.request.GET["place_search"]
+            places = Place.objects.search_by_name(place_search, places)
+        return places
 
 
 class PlaceDetailView(LoginRequiredMixin, DeleteView):

@@ -1,12 +1,29 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db import models
 from django.urls import reverse
+
+
+class UserManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def search_by_username(self, search_text):
+        vector = SearchVector("username")
+        query = SearchQuery(search_text)
+        return (
+            self.get_queryset()
+            .annotate(search=vector, rank=SearchRank(vector, query))
+            .filter(search=search_text)
+            .order_by("-rank")
+        )
 
 
 class User(AbstractUser):
     following = models.ManyToManyField(
         "self", through="Follow", related_name="followers", symmetrical=False
     )
+    objects = UserManager()
 
     def get_absolute_url(self):
         return reverse("user_detail", args=[self.username])

@@ -22,3 +22,7 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "email")
+
+
+class UserSearchForm(forms.Form):
+    user_search = forms.CharField(label="Search", help_text="Search for users")

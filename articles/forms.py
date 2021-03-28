@@ -56,3 +56,7 @@ class SubCommentForm(forms.ModelForm):
         model = SubComment
         fields = ["body", "main_comment"]
         widgets = {"main_comment": forms.HiddenInput}
+
+
+class ArticleSearchForm(forms.Form):
+    article_search = forms.CharField(label="Search", help_text="Search for articles")

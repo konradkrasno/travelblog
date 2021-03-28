@@ -38,7 +38,9 @@ class AddImageView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse("places:detail", args=[self.object.place.id, self.object.place.slug])
+        return reverse(
+            "places:detail", args=[self.object.place.id, self.object.place.slug]
+        )
 
 
 class DeleteImageView(LoginRequiredMixin, DeleteView):
@@ -46,4 +48,6 @@ class DeleteImageView(LoginRequiredMixin, DeleteView):
     template_name = "confirm_delete.html"
 
     def get_success_url(self):
-        return reverse("places:detail", args=[self.object.place.id, self.object.place.slug])
+        return reverse(
+            "places:detail", args=[self.object.place.id, self.object.place.slug]
+        )

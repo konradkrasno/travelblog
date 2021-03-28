@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -10,6 +11,17 @@ from places.models import Place
 class ArticleManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(publish=True)
+
+    def search_by_title(self, search_text, objects=None):
+        vector = SearchVector("title")
+        query = SearchQuery(search_text)
+        if not objects:
+            objects = self.get_queryset()
+        return (
+            objects.annotate(search=vector, rank=SearchRank(vector, query))
+            .filter(search=search_text)
+            .order_by("-rank")
+        )
 
 
 class Article(models.Model):

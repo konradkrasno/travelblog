@@ -34,3 +34,7 @@ class PlaceForm(forms.ModelForm):
 
 
 ImagesFormSet = inlineformset_factory(Place, Image, form=AddImageForm, can_delete=False)
+
+
+class PlaceSearchForm(forms.Form):
+    place_search = forms.CharField(label="Search", help_text="Search for places")
