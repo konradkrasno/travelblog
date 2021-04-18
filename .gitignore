@@ -5,3 +5,5 @@ media
 db.sqlite3
 .env
 todo.txt
+venv
+.idea
