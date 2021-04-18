@@ -37,8 +37,9 @@
         </form>
         <br>
         <a href="{% url 'places:update' pk=place.id slug=place.slug %}"><p>Update place</p></a>
-        <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>
+        <a href="{% url 'places:delete' pk=place.id %}"><p>Delete place</p></a>        
       {% endif %}
+      <p>Number of displays: {{number_of_displays}}</p>
     </div>
   </div>
 {% endblock %}

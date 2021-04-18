@@ -5,6 +5,7 @@ from django.views.generic import DetailView, ListView, FormView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
+from common.mixins import DisplayCounterMixin
 from .forms import (
     ArticleForm,
     ArticlePlacesFormSet,
@@ -32,11 +33,13 @@ class ArticleListView(LoginRequiredMixin, ListView):
             articles = self.request.user.articles.all()
         if "article_search" in self.request.GET:
             article_search = self.request.GET["article_search"]
-            articles = Article.pub_objects.search_by_title(article_search, objects=articles)
+            articles = Article.pub_objects.search_by_title(
+                article_search, objects=articles
+            )
         return articles
 
 
-class ArticleDetailView(LoginRequiredMixin, DetailView):
+class ArticleDetailView(LoginRequiredMixin, DisplayCounterMixin, DetailView):
     model = Article
     template_name = "articles/article/detail.html"
 

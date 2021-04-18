@@ -161,3 +161,9 @@ LEAFLET_CONFIG = {
 
 # Crispy configuration
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+
+# Redis configuration
+REDIS_HOST = "localhost"
+REDIS_PORT = "6379"
+REDIS_DB = 1
