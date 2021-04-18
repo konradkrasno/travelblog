@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView
 
 from places.models import Place
@@ -17,7 +17,7 @@ class ImageListView(LoginRequiredMixin, ListView):
         return super().get_queryset().filter(author__username=username)
 
 
-class ImageDetailView(LoginRequiredMixin, DeleteView):
+class ImageDetailView(LoginRequiredMixin, DetailView):
     model = Image
     template_name = "images/image/detail.html"
 
