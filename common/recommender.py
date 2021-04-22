@@ -25,16 +25,16 @@ class Counter(object):
             return int(result)
         return 0
 
-    def get_most_displayed_objects(self, model_name: str, limit: int = 5) -> List:
+    def get_most_popular_objects(self, model_name: str, limit: int = 5) -> List:
         model_key = f"{model_name}{self._suffix}"
         if limit < 1:
             return []
-        objects = r.zrange(model_key, 0, limit-1, desc=True)
+        objects = r.zrange(model_key, 0, limit - 1, desc=True)
         return [int(_id) for _id in objects]
 
 
 class Recommender:
-    def __init__(current_user_name: str):
+    def __init__(self, current_user_name: str):
         self._current_user_name = current_user_name
 
     @property
@@ -43,7 +43,7 @@ class Recommender:
 
     @property
     def current_user_name(self) -> str:
-        return set._current_user_name
+        return self._current_user_name
 
     @staticmethod
     def get_user_key(username: str) -> str:
@@ -56,28 +56,33 @@ class Recommender:
     @staticmethod
     def get_object_name(obj: Model) -> str:
         return f"object:{obj._meta.model_name}:{obj.id}"
-    
+
     def relate_current_user_with_object(self, obj: Model) -> None:
         r.sadd(self.current_user_key, self.get_object_name(obj))
         r.sadd(self.get_object_key(obj), self.current_user_name)
 
-    # @staticmethod
-    # def get_object_model_and_id(obj_name: str, suffix: str) -> Tuple:
-    #     model_name, _id = obj_name.split(":")[1:]
-    #     return f"{model_name}{suffix}", _id
-
-    @classmethod
-    def retrieve_objects_by_displays(cls, model_name: str, objects: List, limit: int) -> List:
-        # displays_counter = Counter(":display_count")
-        flat_ids = "".join([obj_name.split(":")[-1] for obj_name in objects])
-        tmp_key = f"{model_name}{flat_ids}"
-        r.zunionstore(tmp_key, )
-
-
     @classmethod
     def get_recommendations(cls, model_name: str, username: str, limit: int) -> List:
-        objects = r.smembers(self.get_user_key(username))
-        object_keys = [f"{obj_name}:viewers" for obj_name in objects if model_name in object_name]
-        users = r.sunion(object_keys)
-        objects = [r.sdiff(self.get_user_key(user), self.get_user_key(username)) for user in users if user != username]
-        return self.retrieve_objects_by_displays(model_name, objects, limit)
+        usr_obj = r.smembers(cls.get_user_key(username))
+        usr_obj_keys = [
+            f"{obj_name.decode()}:viewers"
+            for obj_name in usr_obj
+            if model_name in obj_name.decode()
+        ]
+        if usr_obj_keys:
+            users = r.sunion(usr_obj_keys)
+            other_usr_obj = [
+                r.sdiff(cls.get_user_key(user.decode()), cls.get_user_key(username))
+                for user in users
+                if user.decode() != username
+            ]
+            tmp_key = f"tmp_key:{username}:{model_name}"
+            for objects in other_usr_obj:
+                for obj in objects:
+                    r.zincrby(tmp_key, 1, obj)
+            if limit < 1:
+                return []
+            result = r.zrange(tmp_key, 0, limit - 1, desc=True)
+            r.delete(tmp_key)
+            return [int(obj.decode().split(":")[-1]) for obj in result]
+        return []

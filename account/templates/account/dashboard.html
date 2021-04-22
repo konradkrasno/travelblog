@@ -16,6 +16,9 @@
     {% include "places/place/places.html" with place_list=places %}
   {% endif %}
 
+  <p>Recommended articles:</p>
+  {% show_recommended_articles request.user.username 3 %}
+
   <p>Most popular articles:</p>
   {% show_most_popular_articles 3 %}
 
