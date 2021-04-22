@@ -2,7 +2,6 @@ appdirs==1.4.4
 asgiref==3.3.1
 black==20.8b1
 click==7.1.2
-dataclasses==0.8
 Django==3.1.7
 django-crispy-forms==1.11.2
 django-geojson==3.1.0
@@ -11,7 +10,6 @@ easy-thumbnails==2.7.1
 mypy-extensions==0.4.3
 pathspec==0.8.1
 Pillow==8.1.2
-pkg-resources==0.0.0
 psycopg2-binary==2.8.6
 python-dotenv==0.15.0
 pytz==2021.1
