@@ -105,7 +105,9 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         places = None
         if "place_search" in self.request.GET:
             place_search = self.request.GET["place_search"]
-            places = Place.objects.search_by_name(place_search).filter(author=self.object)
+            places = Place.objects.search_by_name(place_search).filter(
+                author=self.object
+            )
         elif "article_search" in self.request.GET:
             article_search = self.request.GET["article_search"]
             articles = Article.pub_objects.search_by_title(article_search, articles)

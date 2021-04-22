@@ -16,6 +16,7 @@
     </p>
     <hr>
     <p>Posted on {{ article.updated }} </p>
+    <p>Number of displays: {{number_of_displays}}</p>
     <hr>
     <p class="lead">{{ article.body }}</p>
     {% with places=article.article_places.all %}

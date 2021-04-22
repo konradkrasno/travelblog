@@ -14,8 +14,7 @@ class PlaceManager(models.Manager):
         if not objects:
             objects = self.get_queryset()
         return (
-            objects
-            .annotate(search=vector, rank=SearchRank(vector, query))
+            objects.annotate(search=vector, rank=SearchRank(vector, query))
             .filter(search=search_text)
             .order_by("-rank")
         )

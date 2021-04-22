@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, DeleteView
 
+from common.mixins import DisplayCounterMixin
 from places.models import Place
 from .forms import AddImageForm
 from .models import Image
@@ -17,7 +18,7 @@ class ImageListView(LoginRequiredMixin, ListView):
         return super().get_queryset().filter(author__username=username)
 
 
-class ImageDetailView(LoginRequiredMixin, DetailView):
+class ImageDetailView(LoginRequiredMixin, DisplayCounterMixin, DetailView):
     model = Image
     template_name = "images/image/detail.html"
 
