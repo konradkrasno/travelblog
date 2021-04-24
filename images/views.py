@@ -19,7 +19,9 @@ class ImageListView(LoginRequiredMixin, ListView):
         return super().get_queryset().filter(author__username=username)
 
 
-class ImageDetailView(LoginRequiredMixin, DisplayCounterMixin, CommentMixin, DetailView):
+class ImageDetailView(
+    LoginRequiredMixin, DisplayCounterMixin, CommentMixin, DetailView
+):
     model = Image
     template_name = "images/image/detail.html"
 

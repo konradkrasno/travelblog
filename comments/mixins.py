@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.http import HttpResponseForbidden
 from django.views.generic.detail import SingleObjectMixin
+from django.contrib.contenttypes.models import ContentType
 
 from .forms import CommentForm, SubCommentForm
 from .models import Comment
@@ -11,7 +12,10 @@ class CommentMixin(object):
         data = super().get_context_data()
         data["comment_form"] = CommentForm()
         data["sub_comment_form"] = SubCommentForm()
-        # data["comments"] = Comment.objects.filter(commented_obj=self.object)
+        data["comments"] = Comment.objects.filter(
+            commented_obj_ct=ContentType.objects.get_for_model(self.model),
+            commented_obj_id=self.object.id,
+        )
         return data
 
 

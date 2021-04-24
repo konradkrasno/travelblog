@@ -10,9 +10,7 @@ class CommentManager(models.Manager):
 
 
 class Comment(models.Model):
-    author = models.ForeignKey(
-        User, related_name="comments", on_delete=models.CASCADE
-    )
+    author = models.ForeignKey(User, related_name="comments", on_delete=models.CASCADE)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -28,7 +26,7 @@ class Comment(models.Model):
         ordering = ("created",)
 
     def __str__(self):
-        return f"Comment by {self.author.username} on {self.article.title}"
+        return f"Comment by {self.author.username} on {self.commented_obj}"
 
 
 class SubComment(models.Model):

@@ -31,7 +31,9 @@ class PlaceListView(LoginRequiredMixin, ListView):
         return places
 
 
-class PlaceDetailView(LoginRequiredMixin, DisplayCounterMixin, CommentMixin, DetailView):
+class PlaceDetailView(
+    LoginRequiredMixin, DisplayCounterMixin, CommentMixin, DetailView
+):
     model = Place
     template_name = "places/place/detail.html"
 
