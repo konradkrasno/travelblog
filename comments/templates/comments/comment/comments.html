@@ -1,10 +1,11 @@
 {% load crispy_forms_tags %}
+{% load comments %}
 
 <!-- Comments Form -->
 <div class="card my-4">
 <h5 class="card-header">Leave a Comment:</h5>
 <div class="card-body">
-    <form action="{% url 'articles:comment' object.id %}" method="post">
+    <form action="{% url 'comments:create_comment' object|model_name object.id %}" method="post">
       {{ comment_form|crispy }}
       {% csrf_token %}
       <button type="submit" class="btn btn-primary">Submit</button>
@@ -19,7 +20,7 @@
         <h5 class="mt-0">{{ comment.author.username }}</h5>
         {{ comment.body }}
 
-        <form action="{% url 'articles:sub_comment' object.id %}" method="post">
+        <form action="{% url 'comments:create_sub_comment' object|model_name object.id %}" method="post">
           {{ sub_comment_form|crispy }}
           {% csrf_token %}
           <input type="hidden" name="main_comment" id="main_comment_id" value="{{ comment.id }}">
