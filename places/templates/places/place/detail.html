@@ -42,4 +42,7 @@
       <p>Number of displays: {{number_of_displays}}</p>
     </div>
   </div>
+
+  {% include "comments/comment/comments.html" with comment_form=comment_form comments=comments object=place %}
+
 {% endblock %}

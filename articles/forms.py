@@ -3,7 +3,7 @@ from django.forms.models import inlineformset_factory
 from django.utils.text import slugify
 
 from places.models import Place
-from .models import Article, ArticlePlace, ArticleComment, SubComment
+from .models import Article, ArticlePlace
 
 
 class ArticleForm(forms.ModelForm):
@@ -43,19 +43,6 @@ class ArticlePlacesFormSet(BaseArticlePlacesFormSet):
     def _construct_form(self, *args, **kwargs):
         kwargs["user"] = self.user
         return super(ArticlePlacesFormSet, self)._construct_form(*args, **kwargs)
-
-
-class ArticleCommentForm(forms.ModelForm):
-    class Meta:
-        model = ArticleComment
-        fields = ["body"]
-
-
-class SubCommentForm(forms.ModelForm):
-    class Meta:
-        model = SubComment
-        fields = ["body", "main_comment"]
-        widgets = {"main_comment": forms.HiddenInput}
 
 
 class ArticleSearchForm(forms.Form):

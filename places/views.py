@@ -6,6 +6,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from djgeojson.views import GeoJSONLayerView
 
+from comments.mixins import CommentMixin
 from common.mixins import DisplayCounterMixin
 from images.forms import AddImageForm
 from .forms import ImagesFormSet, PlaceForm, PlaceSearchForm
@@ -30,7 +31,9 @@ class PlaceListView(LoginRequiredMixin, ListView):
         return places
 
 
-class PlaceDetailView(LoginRequiredMixin, DisplayCounterMixin, DetailView):
+class PlaceDetailView(
+    LoginRequiredMixin, DisplayCounterMixin, CommentMixin, DetailView
+):
     model = Place
     template_name = "places/place/detail.html"
 
